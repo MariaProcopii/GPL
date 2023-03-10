@@ -1,4 +1,4 @@
-// Variables
+### Variables
 ```
 x = 5 + 2 
 name = None
@@ -6,8 +6,7 @@ isAlive = False
 i = 2
 ```
 
-
-// Conditional
+### Conditional
 ```
 if (x > 2) {
 	name = "calin"	
@@ -25,7 +24,7 @@ if (x > 3) {
 ```
 
 
-// Function
+### Function
 ```
 def add(x, y) {
 	return x + y
@@ -33,7 +32,7 @@ def add(x, y) {
 ```
 
 
-// Cycles
+### Cycles
 ```
 for (x = 2; x > 2; x++) {
 	i = i + 1
@@ -41,7 +40,7 @@ for (x = 2; x > 2; x++) {
 ```
 
 
-// Data structure
+### Data structure
 ```
 arr = []
 ```
