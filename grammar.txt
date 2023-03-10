@@ -32,12 +32,12 @@ P = {
 	<int> -> <digit><int> | <digit>
 
 	<conditional> -> if (<expression>) {<program>} |
-							 unless (<expression>) {<program>} |
-							 if (<expression>) {<program>} else {<program>} |
-							 unless (<expression>) {<program>} then {<program>}
+			 unless (<expression>) {<program>} |
+			 if (<expression>) {<program>} else {<program>} |
+			 unless (<expression>) {<program>} then {<program>}
 
 	<for expression> -> for (<expression>;<expression;<expression>) {<program>} |
-						     for (;<expression>;<expression>) {<program>} 
+			    for (;<expression>;<expression>) {<program>} 
 
 	<array> -> [<element>] | []
 
