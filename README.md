@@ -3,12 +3,12 @@
 
 ## Roadmap
 ### Lexer 
-- [ ] Identifiers
-- [ ] Functions
-- [ ] Conditionals 
-- [ ] Returns 
-- [ ] Logical operators
+- [X] Identifiers
+- [X] Functions
+- [X] Conditionals 
+- [X] Returns 
+- [X] Logical operators
 - [ ] Comments
-- [ ] Delimiters
+- [X] Delimiters
 
 ### Parser
