@@ -1,22 +1,21 @@
 P = {
 	<program> -> <statement> | 
-						<statement><program>
+		     <statement><program>
 
 	<statement> -> <expression> |
-						  <expression><statement>
+		       <expression><statement>
 
-	<expression> -> <id> | <literal> | <conditional> | 
-							 <id><assign><literal> |
-                   <id><assign><expression> |
-							 <for expression> |
-							 <array> | <bool>
-							 <function> |
-							 <function call> | 
-							 <expression><logical operator><expression> | 
-							 <expression><arithmetic operator><expression> |
-							 <sufix><id> | <id><suffix> |
-							 <comment> |
-							 <return expression>
+	<expression> ->  <id> | <literal> | <conditional> | 
+			 <id><assign><literal> |
+                	 <id><assign><expression> |
+			 <for expression> |
+		         <array> | <bool><function> |
+			 <function call> | 
+			 <expression><logical operator><expression> | 
+			 <expression><arithmetic operator><expression> |
+			 <sufix><id> | <id><suffix> |
+			 <comment> |
+			 <return expression>
 
 	<return expression> -> return <expression> | return
 							 
@@ -43,16 +42,16 @@ P = {
 	<array> -> [<element>] | []
 
 	<element> -> <id>,<element> |
-						<literal>,<element> |
-						<id> | <literal>
+		     <literal>,<element> |
+		     <id> | <literal>
 
 	<function call> -> <id>(<args>) | <id>()
 
 	<args> -> <expression> | 
-				  <expression>, <args>
+		  <expression>, <args>
 
 	<function> -> def <id>(<param>) {<program>} |
-						 def <id>() {<program>}
+		      def <id>() {<program>}
 
 	<param> -> <id> | <id>, <param>
  
@@ -62,7 +61,7 @@ P = {
 	
 	<letter> -> a | b | ... | z | A | B | ... | Z | _ 
 	
-	<digit> -> 0 | 1 | ... | 9 | ε
+	<digit> ->  0 | 1 | ... | 9 | ε
 
 	<symbol> -> ! | @ | # | $ | % | ... | ε
 
