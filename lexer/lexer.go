@@ -1,6 +1,8 @@
 package lexer
 
-import "../token"
+import (
+	"github.com/MariaProcopii/GPL/token"
+)
 
 type Lexer struct {
 	input        string
@@ -28,7 +30,7 @@ func isDigit(ch byte) bool {
 }
 
 func isComment(ch byte) bool {
-	return isLetter(ch) || ch == ' ' && ch != '\n'
+	return isLetter(ch) || ch == ' ' || ch == '/' && ch != '\n'
 }
 
 func isString(ch byte) bool {
@@ -140,7 +142,6 @@ func (l *Lexer) NextToken() token.Token {
 		}
 	case '/':
 		if l.peekChar() == '/' {
-			l.readChar()
 			literal := l.readComment()
 			tok = token.Token{Type: token.COMMENT, Literal: literal}
 		} else {

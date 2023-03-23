@@ -1,0 +1,7 @@
+var x = 100 
+
+def add(x, y) {
+    return x + y
+}
+
+add(x, 10)

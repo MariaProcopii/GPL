@@ -1,9 +1,12 @@
 ### Variables
 ```
-x = 5 + 2 
-name = None
-isAlive = False
-i = 2
+var x = 5 + 2 
+var name = None
+var isAlive = False
+var i = 2
+var func = add(1, 4)
+var barfoo = 5 * 5 / 10 - add(4, 1)
+var uwu = func
 ```
 
 ### Conditional
@@ -34,7 +37,7 @@ def add(x, y) {
 
 ### Cycles
 ```
-for (x = 2; x > 2; x++) {
+for (var x = 2; x > 2; x++) {
 	i = i + 1
 }
 ```
@@ -42,6 +45,6 @@ for (x = 2; x > 2; x++) {
 
 ### Data structure
 ```
-arr = []
+var arr = []
 ```
 

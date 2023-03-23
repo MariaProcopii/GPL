@@ -5,7 +5,8 @@ import (
 	"os"
 	"os/user"
 
-	"./repl"
+	"github.com/MariaProcopii/GPL/reader"
+	"github.com/MariaProcopii/GPL/repl"
 )
 
 func main() {
@@ -14,5 +15,11 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("Hello %s!\n", user.Username)
-	repl.Start(os.Stdin, os.Stdout)
+
+	cmdParams := os.Args[1:]
+	if len(cmdParams) > 0 {
+		reader.ReadFile(cmdParams[0])
+	} else {
+		repl.Start(os.Stdin, os.Stdout)
+	}
 }
