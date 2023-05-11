@@ -14,6 +14,7 @@ const (
 	// Identifiers + literals
 	IDENT  = "IDENT"
 	INT    = "INT"
+	FLOAT  = "FLOAT"
 	BOOL   = "BOOL"
 	NONE   = "NONE"
 	STRING = "STRING"

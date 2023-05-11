@@ -66,9 +66,12 @@ func New(l *lexer.Lexer) *Parser {
 
 	p.prefixParseFns = make(map[token.TokenType]prefixParseFn)
 	p.registerPrefix(token.IDENT, p.parseIdentifier)
+	p.registerPrefix(token.STRING, p.parseString)
 	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+	p.registerPrefix(token.FLOAT, p.parseFloatLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
+	p.registerPrefix(token.INCREMENT, p.parsePrefixExpression)
 	p.registerPrefix(token.TRUE, p.parseBoolean)
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.LPAREN, p.parseGroupedExpression)
@@ -97,6 +100,12 @@ func (p *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
 		t, p.peekToken.Type)
 	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) skipNewlines() {
+	for p.curToken.Type == token.NEWLINE {
+		p.nextToken()
+	}
 }
 
 func (p *Parser) noPrefixParseFnError(t token.TokenType) {
@@ -163,6 +172,25 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit.Value = value
 
 	return lit
+}
+
+func (p *Parser) parseFloatLiteral() ast.Expression {
+	lit := &ast.FloatLiteral{Token: p.curToken}
+
+	value, err := strconv.ParseFloat(p.curToken.Literal, 64)
+	if err != nil {
+		msg := fmt.Sprintf("could not parse %q as float", p.curToken.Literal)
+		p.errors = append(p.errors, msg)
+		return nil
+	}
+
+	lit.Value = value
+
+	return lit
+}
+
+func (p *Parser) parseString() ast.Expression {
+	return &ast.String{Token: p.curToken, Value: p.curToken.Literal}
 }
 
 func (p *Parser) parseBoolean() ast.Expression {
@@ -239,14 +267,20 @@ func (p *Parser) parseIfExpression() ast.Expression {
 		return nil
 	}
 
+	p.skipNewlines()
+
 	if !p.expectPeek(token.LBRACE) {
 		return nil
 	}
 
 	expression.Consequence = p.parseBlockStatement()
 
+	p.skipNewlines()
+
 	if p.peekTokenIs(token.ELSE) {
 		p.nextToken()
+
+		p.skipNewlines()
 
 		if !p.expectPeek(token.LBRACE) {
 			return nil
@@ -385,7 +419,9 @@ func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
 func (p *Parser) parseExpression(precedence int) ast.Expression {
 	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
-		p.noPrefixParseFnError(p.curToken.Type)
+		if p.curToken.Type != token.NEWLINE {
+			p.noPrefixParseFnError(p.curToken.Type)
+		}
 		return nil
 	}
 	leftExp := prefix()

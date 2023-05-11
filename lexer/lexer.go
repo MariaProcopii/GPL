@@ -33,8 +33,12 @@ func isComment(ch byte) bool {
 	return isLetter(ch) || ch == ' ' || ch == '/' && ch != '\n'
 }
 
-func isString(ch byte) bool {
-	return isLetter(ch) || ch == ' ' || isDigit(ch) || ch == '$' && ch != '\n'
+func reverseString(s string) string {
+	r := []rune(s)
+	for i, j := 0, len(r)-1; i < len(r)/2; i, j = i+1, j-1 {
+		r[i], r[j] = r[j], r[i]
+	}
+	return string(r)
 }
 
 func (l *Lexer) skipWhitespace() {
@@ -69,6 +73,51 @@ func (l *Lexer) readNumber() string {
 	return l.input[position:l.position]
 }
 
+func (l *Lexer) readString() string {
+	position := l.position + 1
+	for {
+		l.readChar()
+		if l.ch == '"' || l.ch == 0 {
+			break
+		}
+	}
+	return l.input[position:l.position]
+}
+
+func (l *Lexer) readFloat() string {
+	var decimalPart string
+	var fractPart string
+
+	for l.ch != 0 && isDigit(l.ch) {
+		l.readChar()
+	}
+	dotPosition := l.position
+	for i := dotPosition - 1; i > 0 && isDigit(l.input[i]); i-- {
+		decimalPart += string(l.input[i])
+	}
+	for j := dotPosition + 1; j < len(l.input) && isDigit(l.input[j]); j++ {
+		fractPart += string(l.input[j])
+	}
+
+	for isDigit(l.ch) || l.ch == '.' {
+		l.readChar()
+	}
+	return reverseString(decimalPart) + "." + fractPart
+}
+
+func (l *Lexer) seekFloat() bool {
+	if l.readPosition >= len(l.input) {
+		return false
+	} else {
+		for i := l.position; i < len(l.input)-1 && isDigit(l.input[i]) || l.input[i] == '.'; i++ {
+			if l.input[i] == '.' {
+				return true
+			}
+		}
+	}
+	return false
+}
+
 func (l *Lexer) peekChar() byte {
 	if l.readPosition >= len(l.input) {
 		return 0
@@ -80,14 +129,6 @@ func (l *Lexer) peekChar() byte {
 func (l *Lexer) readComment() string {
 	position := l.position
 	for isComment(l.ch) {
-		l.readChar()
-	}
-	return l.input[position:l.position]
-}
-
-func (l *Lexer) readString() string {
-	position := l.position
-	for isString(l.ch) {
 		l.readChar()
 	}
 	return l.input[position:l.position]
@@ -184,15 +225,8 @@ func (l *Lexer) NextToken() token.Token {
 	case '\n':
 		tok = newToken(token.NEWLINE, l.ch)
 	case '"':
-		l.readChar()
-		if isString(l.ch) {
-			tok.Literal = l.readString()
-			tok.Type = token.STRING
-			l.readChar()
-			return tok
-		} else {
-			tok = newToken(token.DBLQUOTE, l.ch)
-		}
+		tok.Type = token.STRING
+		tok.Literal = l.readString()
 	case 0:
 		tok.Literal = ""
 		tok.Type = token.EOF
@@ -202,6 +236,11 @@ func (l *Lexer) NextToken() token.Token {
 			tok.Type = token.LookupIdent(tok.Literal)
 			return tok
 		} else if isDigit(l.ch) {
+			if l.seekFloat() {
+				tok.Type = token.FLOAT
+				tok.Literal = l.readFloat()
+				return tok
+			}
 			tok.Type = token.INT
 			tok.Literal = l.readNumber()
 			return tok
@@ -209,7 +248,6 @@ func (l *Lexer) NextToken() token.Token {
 			tok = newToken(token.ILLEGAL, l.ch)
 		}
 	}
-
 	l.readChar()
 	return tok
 }

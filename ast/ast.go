@@ -135,6 +135,19 @@ func (il *IntegerLiteral) String() string {
 	return il.Token.Literal
 }
 
+type FloatLiteral struct {
+	Token token.Token
+	Value float64
+}
+
+func (fl *FloatLiteral) expressionNode() {}
+func (fl *FloatLiteral) TokenLiteral() string {
+	return fl.Token.Literal
+}
+func (fl *FloatLiteral) String() string {
+	return fl.Token.Literal
+}
+
 type Boolean struct {
 	Token token.Token
 	Value bool
@@ -146,6 +159,19 @@ func (b *Boolean) TokenLiteral() string {
 }
 func (b *Boolean) String() string {
 	return b.Token.Literal
+}
+
+type String struct {
+	Token token.Token
+	Value string
+}
+
+func (s *String) expressionNode() {}
+func (s *String) TokenLiteral() string {
+	return s.Token.Literal
+}
+func (s *String) String() string {
+	return s.Token.Literal
 }
 
 type PrefixExpression struct {
@@ -236,6 +262,13 @@ func (ie *IfExpression) String() string {
 	}
 
 	return out.String()
+}
+
+type ForLoopExpression struct {
+	Token        token.Token
+	VarStatement *VarStatement
+	Condition    Expression
+	Step         interface{}
 }
 
 type FunctionLiteral struct {
